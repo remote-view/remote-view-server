@@ -1,5 +1,10 @@
 use clap::Parser;
 
+mod encode;
+
+use encode::RawBuffer;
+
+
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -9,12 +14,11 @@ struct Args {
 
     /// Port to connect to
     #[arg(short, long)]
-    port: u16,
+    port: u8
 
 }
 
 fn main() {
-
-    let args = Args::parse();
-    println!("{}", args.target);
+    let rb = RawBuffer::new();
+    println!("{:?}", rb.content);
 }
