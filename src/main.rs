@@ -19,7 +19,7 @@ struct Args {
 }
 
 fn main() {
-    let path = String::from("test");
+    let path = String::from("/dev/fb0");
     let rb = RawBuffer::new(path);
     println!("{:?}", rb.content);
 }

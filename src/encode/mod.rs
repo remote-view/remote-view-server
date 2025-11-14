@@ -1,24 +1,26 @@
+use std::io::Read;
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::BufReader;
 
 #[derive(Debug)]
 pub struct RawBuffer {
-    pub content: String
+    pub content: Vec<u8>,
 }
 
 impl RawBuffer {
     pub fn new(path: String) -> Self {
 
-        let mut file = match File::open(&path) {
+        let file = match File::open(&path) {
                 Err(why) => panic!("buffer not available: {}", why),
                 Ok(file) => file,
             };
         
-        let mut content = String::from("");
-        match file.read_to_string(&mut content) {
-            Err(why) => panic!("couldn't read buffer: {}", why),
-            Ok(content) => content,
-        };
+        let buffer = BufReader::new(&file);
+
+        let mut content: Vec<u8> = vec![];
+        for byte in buffer.bytes() {
+            content.push(byte.expect("error pushing"));
+        }
 
         Self { content }
         }
