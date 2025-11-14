@@ -1,4 +1,5 @@
-use std::fs::{File,read_to_string};
+use std::fs::File;
+use std::io::prelude::*;
 
 #[derive(Debug)]
 pub struct RawBuffer {
@@ -6,20 +7,20 @@ pub struct RawBuffer {
 }
 
 impl RawBuffer {
-    pub fn new() -> Self {
-        Self {
-            content: match File::open("/dev/fb0") {
-                Err(why) => panic!("buffer nbt available"),
-                Ok(file) => read_to_string(file).unwrap().lines(),
-            },
-        }
-    }
-    fn to_str(f: File) -> String {
-        let mut res = String::new();
-        for line in read_to_string(f).unwrap().lines() {
-            res += line;
-        }
+    pub fn new(path: String) -> Self {
 
-        return res;
+        let mut file = match File::open(&path) {
+                Err(why) => panic!("buffer not available: {}", why),
+                Ok(file) => file,
+            };
+        
+        let mut content = String::from("");
+        match file.read_to_string(&mut content) {
+            Err(why) => panic!("couldn't read buffer: {}", why),
+            Ok(content) => content,
+        };
+
+        Self { content }
+        }
     }
-}
+
